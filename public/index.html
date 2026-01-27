@@ -201,39 +201,44 @@
   }
 
   function showMaquinas() {
-    document.getElementById("mainContent").innerHTML = `
-      <div class="card">
-        <h3>Máquinas</h3>
-        <table width="100%" border="1" cellpadding="8" cellspacing="0">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Local</th>
-              <th>Tipo</th>
-              <th>Status</th>
-              <th>Último Abastecimento</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>001</td>
-              <td>Shopping Central</td>
-              <td>Pelúcia</td>
-              <td>Ativa</td>
-              <td>20/01/2026</td>
-            </tr>
-            <tr>
-              <td>002</td>
-              <td>Supermercado Boa Vista</td>
-              <td>Pelúcia</td>
-              <td>Manutenção</td>
-              <td>15/01/2026</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    `;
-  }
-</script>
- </body>
-</html>
+  document.getElementById("mainContent").innerHTML = `
+    <div class="card">
+      <h3>Cadastro de Máquinas</h3>
+
+      <input id="local" placeholder="Local da máquina" />
+      <input id="tipo" placeholder="Tipo (Pelúcia, Corte, etc)" />
+      <input id="status" placeholder="Status (Ativa, Manutenção)" />
+      <button onclick="addMaquina()">Adicionar</button>
+
+      <h4>Lista de Máquinas</h4>
+      <table width="100%" border="1" cellpadding="8" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Local</th>
+            <th>Tipo</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="listaMaquinas">
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+function addMaquina() {
+  const local = document.getElementById("local").value;
+  const tipo = document.getElementById("tipo").value;
+  const status = document.getElementById("status").value;
+
+  const tabela = document.getElementById("listaMaquinas");
+
+  const linha = `
+    <tr>
+      <td>${local}</td>
+      <td>${tipo}</td>
+      <td>${status}</td>
+    </tr>
+  `;
+
+  tabela.innerHTML += linha;
+}
