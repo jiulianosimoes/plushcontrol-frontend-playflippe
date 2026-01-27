@@ -69,12 +69,13 @@
     <div class="layout">
       <div class="sidebar">
         <h2>PlayFlippe</h2>
-        <div class="menu-item">Dashboard</div>
-        <div class="menu-item">Máquinas</div>
-        <div class="menu-item">Abastecimentos</div>
-        <div class="menu-item">Financeiro</div>
-        <div class="menu-item">Funcionários</div>
-        <div class="menu-item">Configurações</div>
+<div class="menu-item" onclick="showDashboard()">Dashboard</div>
+<div class="menu-item" onclick="showMaquinas()">Máquinas</div>
+<div class="menu-item">Abastecimentos</div>
+<div class="menu-item">Financeiro</div>
+<div class="menu-item">Funcionários</div>
+<div class="menu-item">Configurações</div>
+
       </div>
 
       <div class="main">
@@ -82,7 +83,7 @@
           PlushControl - Sistema de Gestão
         </div>
 
-<div class="content">
+<div class="content" id="mainContent">
   <div class="card">
     <h3>Máquinas</h3>
     <table width="100%" border="1" cellpadding="8" cellspacing="0">
@@ -114,6 +115,81 @@
     </table>
   </div>
 </div>
+
+    <table width="100%" border="1" cellpadding="8" cellspacing="0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Local</th>
+          <th>Tipo</th>
+          <th>Status</th>
+          <th>Último Abastecimento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>001</td>
+          <td>Shopping Central</td>
+          <td>Pelúcia</td>
+          <td>Ativa</td>
+          <td>20/01/2026</td>
+        </tr>
+        <tr>
+          <td>002</td>
+          <td>Supermercado Boa Vista</td>
+          <td>Pelúcia</td>
+          <td>Manutenção</td>
+          <td>15/01/2026</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script>
+  function showDashboard() {
+    document.getElementById("mainContent").innerHTML = `
+      <div class="card">
+        <h3>Dashboard</h3>
+        <p>Visão geral do sistema PlushControl PlayFlippe.</p>
+      </div>
+    `;
+  }
+
+  function showMaquinas() {
+    document.getElementById("mainContent").innerHTML = `
+      <div class="card">
+        <h3>Máquinas</h3>
+        <table width="100%" border="1" cellpadding="8" cellspacing="0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Local</th>
+              <th>Tipo</th>
+              <th>Status</th>
+              <th>Último Abastecimento</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>001</td>
+              <td>Shopping Central</td>
+              <td>Pelúcia</td>
+              <td>Ativa</td>
+              <td>20/01/2026</td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td>Supermercado Boa Vista</td>
+              <td>Pelúcia</td>
+              <td>Manutenção</td>
+              <td>15/01/2026</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+</script>
 
       </div>
     </div>
