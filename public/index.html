@@ -225,6 +225,23 @@
     </div>
   `;
 }
+function addMaquina() {
+  const local = document.getElementById("local").value;
+  const tipo = document.getElementById("tipo").value;
+  const status = document.getElementById("status").value;
+
+  const tabela = document.getElementById("listaMaquinas");
+
+  const linha = `
+    <tr>
+      <td>${local}</td>
+      <td>${tipo}</td>
+      <td>${status}</td>
+    </tr>
+  `;
+
+  tabela.innerHTML += linha;
+}
 
 function addMaquina() {
   const local = document.getElementById("local").value;
