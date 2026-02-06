@@ -64,6 +64,26 @@
         });
       });
   </script>
+<script>
+async function carregarMaquinas() {
+  const resposta = await fetch("https://plushcontrol-playflippe-production.up.railway.app/maquinas");
+  const maquinas = await resposta.json();
 
+  const tabela = document.getElementById("tabela-maquinas");
+
+  maquinas.forEach(m => {
+    const linha = `
+      <tr>
+        <td>${m.id}</td>
+        <td>${m.nome}</td>
+        <td>${m.status}</td>
+      </tr>
+    `;
+    tabela.innerHTML += linha;
+  });
+}
+
+carregarMaquinas();
+</script>
 </body>
 </html>
