@@ -1,167 +1,69 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>PlushControl PlayFlippe</title>
+
   <style>
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f5f6fa;
+      font-family: Arial;
+      background: #f5f6fa;
+      padding: 30px;
     }
 
-    .layout {
-      display: flex;
-      height: 100vh;
-    }
-
-    .sidebar {
-      width: 220px;
-      background-color: #0b0b0b;
-      color: white;
-      padding: 20px;
-    }
-
-    .sidebar h2 {
-      color: #ffd700;
-      text-align: center;
-    }
-
-    .menu-item {
-      margin: 15px 0;
-      cursor: pointer;
-    }
-
-    .menu-item:hover {
-      color: #6a5acd;
-    }
-
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .header {
-      height: 60px;
-      background: linear-gradient(90deg, #0057ff, #6a5acd);
-      color: white;
-      display: flex;
-      align-items: center;
-      padding: 0 20px;
-    }
-
-    .content {
-      flex: 1;
-      padding: 20px;
-    }
-
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    input {
-      margin: 5px;
-      padding: 6px;
-    }
-
-    button {
-      padding: 6px 10px;
-      cursor: pointer;
+    h1 {
+      color: #222;
     }
 
     table {
-      margin-top: 15px;
-      width: 100%;
       border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
     }
 
     th, td {
       border: 1px solid #ccc;
-      padding: 8px;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #eee;
     }
   </style>
 </head>
 
 <body>
 
-<div class="layout">
-  <div class="sidebar">
-    <h2>PlayFlippe</h2>
-    <div class="menu-item" onclick="showDashboard()">Dashboard</div>
-    <div class="menu-item" onclick="showMaquinas()">Máquinas</div>
-    <div class="menu-item">Abastecimentos</div>
-    <div class="menu-item">Financeiro</div>
-    <div class="menu-item">Funcionários</div>
-    <div class="menu-item">Configurações</div>
-  </div>
-<div id="root"></div>
+  <h1>📦 Máquinas PlayFlippe</h1>
 
-  <div class="main">
-    <div class="header">PlushControl - Sistema de Gestão</div>
-    <div class="content" id="mainContent"></div>
-  </div>
-</div>
-
-<script>
-  function showDashboard() {
-    document.getElementById("mainContent").innerHTML = `
-      <div class="card">
-        <h3>Dashboard</h3>
-        <p>Visão geral do sistema PlushControl PlayFlippe.</p>
-      </div>
-    `;
-  }
-
-  function showMaquinas() {
-    document.getElementById("mainContent").innerHTML = `
-      <div class="card">
-        <h3>Cadastro de Máquinas</h3>
-
-        <input id="local" placeholder="Local da máquina" />
-        <input id="tipo" placeholder="Tipo (Pelúcia, Corte, etc)" />
-        <input id="status" placeholder="Status (Ativa, Manutenção)" />
-        <button onclick="addMaquina()">Adicionar</button>
-
-        <h4>Lista de Máquinas</h4>
-        <table>
-          <thead>
-            <tr>
-              <th>Local</th>
-              <th>Tipo</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="listaMaquinas"></tbody>
-        </table>
-      </div>
-    `;
-  }
-
-  function addMaquina() {
-    const local = document.getElementById("local").value;
-    const tipo = document.getElementById("tipo").value;
-    const status = document.getElementById("status").value;
-
-    const tabela = document.getElementById("listaMaquinas");
-
-    const linha = `
+  <table>
+    <thead>
       <tr>
-        <td>${local}</td>
-        <td>${tipo}</td>
-        <td>${status}</td>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Status</th>
       </tr>
-    `;
+    </thead>
+    <tbody id="tabela-maquinas"></tbody>
+  </table>
 
-    tabela.innerHTML += linha;
-  }
+  <script>
+    fetch("https://plushcontrol-playflippe-production.up.railway.app/maquinas")
+      .then(res => res.json())
+      .then(dados => {
+        const tabela = document.getElementById("tabela-maquinas");
 
-  // Inicializa com Dashboard aberto
-  showDashboard();
-</script>
+        dados.forEach(m => {
+          tabela.innerHTML +=
+            "<tr>" +
+            "<td>" + m.id + "</td>" +
+            "<td>" + m.nome + "</td>" +
+            "<td>" + m.status + "</td>" +
+            "</tr>";
+        });
+      });
+  </script>
 
 </body>
 </html>
