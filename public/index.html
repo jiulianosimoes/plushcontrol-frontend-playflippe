@@ -5,12 +5,12 @@
 <title>Máquinas PlayFlippe</title>
 
 <style>
-body { font-family: Arial; padding: 40px; background:#f5f5f5 }
-input, button { padding:8px; margin-right:5px }
-table { border-collapse: collapse; width:100%; margin-top:20px; background:white }
-th, td { padding:10px; border:1px solid #ddd }
-th { background:#222; color:white }
-.acoes button { margin-right:6px }
+body { font-family: Arial; padding: 40px; background: #f5f5f5 }
+input, button { padding: 8px; margin-right: 5px }
+table { border-collapse: collapse; width: 100%; margin-top: 20px; background: white }
+th, td { padding: 10px; border: 1px solid #ddd }
+th { background: #222; color: white }
+.acoes button { margin-right: 5px }
 </style>
 </head>
 
@@ -18,8 +18,8 @@ th { background:#222; color:white }
 
 <h2>Máquinas PlayFlippe</h2>
 
-<input id="nome" placeholder="Nome da máquina">
-<input id="status" placeholder="Status">
+<input id="nome" placeholder="Nome da máquina" />
+<input id="status" placeholder="Status" />
 <button onclick="adicionar()">Adicionar</button>
 
 <table>
@@ -31,7 +31,7 @@ th { background:#222; color:white }
 <th>Ações</th>
 </tr>
 </thead>
-<tbody id="tabela"></tbody>
+<tbody id="lista"></tbody>
 </table>
 
 <script>
@@ -41,18 +41,18 @@ async function carregar() {
   const res = await fetch(API)
   const dados = await res.json()
 
-  const tabela = document.getElementById("tabela")
-  tabela.innerHTML = ""
+  const tbody = document.getElementById("lista")
+  tbody.innerHTML = ""
 
   dados.forEach(m => {
-    tabela.innerHTML += `
+    tbody.innerHTML += `
       <tr>
         <td>${m.id}</td>
         <td>${m.nome}</td>
         <td>${m.status}</td>
         <td class="acoes">
-          <button onclick="editar(${m.id}, '${m.nome}', '${m.status}')">✏ Editar</button>
-          <button onclick="excluir(${m.id})">🗑 Excluir</button>
+          <button onclick="editar(${m.id}, '${m.nome}', '${m.status}')">Editar</button>
+          <button onclick="excluir(${m.id})">Excluir</button>
         </td>
       </tr>
     `
@@ -64,8 +64,8 @@ async function adicionar() {
   const status = document.getElementById("status").value
 
   await fetch(API, {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ nome, status })
   })
 
@@ -73,9 +73,7 @@ async function adicionar() {
 }
 
 async function excluir(id) {
-  if(!confirm("Deseja excluir?")) return
-
-  await fetch(${API}/${id}, { method:"DELETE" })
+  await fetch(API + "/" + id, { method: "DELETE" })
   carregar()
 }
 
@@ -83,9 +81,9 @@ async function editar(id, nomeAtual, statusAtual) {
   const nome = prompt("Novo nome:", nomeAtual)
   const status = prompt("Novo status:", statusAtual)
 
-  await fetch(${API}/${id}, {
-    method:"PUT",
-    headers:{ "Content-Type":"application/json" },
+  await fetch(API + "/" + id, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ nome, status })
   })
 
