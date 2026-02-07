@@ -5,12 +5,39 @@
 <title>Máquinas PlayFlippe</title>
 
 <style>
-body { font-family: Arial; padding: 40px; background: #f5f5f5 }
-input, button { padding: 8px; margin-right: 5px }
-table { border-collapse: collapse; width: 100%; margin-top: 20px; background: white }
-th, td { padding: 10px; border: 1px solid #ddd }
-th { background: #222; color: white }
-.acoes button { margin-right: 5px }
+body {
+  font-family: Arial;
+  padding: 40px;
+  background: #f5f5f5;
+}
+
+input, button {
+  padding: 8px;
+  margin-right: 5px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+  background: white;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background: #222;
+  color: white;
+}
+
+.acoes button {
+  margin-right: 5px;
+  cursor: pointer;
+}
 </style>
 </head>
 
@@ -19,7 +46,7 @@ th { background: #222; color: white }
 <h2>Máquinas PlayFlippe</h2>
 
 <input id="nome" placeholder="Nome da máquina" />
-<input id="status" placeholder="Status" />
+<input id="status" placeholder="Status (Ativa/Manutenção)" />
 <button onclick="adicionar()">Adicionar</button>
 
 <table>
@@ -31,11 +58,21 @@ th { background: #222; color: white }
 <th>Ações</th>
 </tr>
 </thead>
+
 <tbody id="lista"></tbody>
 </table>
 
 <script>
+/* =========================
+   CONFIG
+========================= */
+
 const API = "https://plushcontrol-playflippe-production.up.railway.app/maquinas"
+
+
+/* =========================
+   LISTAR
+========================= */
 
 async function carregar() {
   const res = await fetch(API)
@@ -45,13 +82,15 @@ async function carregar() {
   tbody.innerHTML = ""
 
   dados.forEach(m => {
+    const nome = m.nome || m.name
+
     tbody.innerHTML += `
       <tr>
         <td>${m.id}</td>
-        <td>${m.nome}</td>
+        <td>${nome}</td>
         <td>${m.status}</td>
         <td class="acoes">
-          <button onclick="editar(${m.id}, '${m.nome}', '${m.status}')">Editar</button>
+          <button onclick="editar(${m.id}, '${nome}', '${m.status}')">Editar</button>
           <button onclick="excluir(${m.id})">Excluir</button>
         </td>
       </tr>
@@ -59,9 +98,19 @@ async function carregar() {
   })
 }
 
+
+/* =========================
+   ADICIONAR
+========================= */
+
 async function adicionar() {
   const nome = document.getElementById("nome").value
   const status = document.getElementById("status").value
+
+  if (!nome || !status) {
+    alert("Preencha nome e status")
+    return
+  }
 
   await fetch(API, {
     method: "POST",
@@ -69,17 +118,38 @@ async function adicionar() {
     body: JSON.stringify({ nome, status })
   })
 
+  document.getElementById("nome").value = ""
+  document.getElementById("status").value = ""
+
   carregar()
 }
 
+
+/* =========================
+   EXCLUIR
+========================= */
+
 async function excluir(id) {
-  await fetch(API + "/" + id, { method: "DELETE" })
+  if (!confirm("Deseja excluir esta máquina?")) return
+
+  await fetch(API + "/" + id, {
+    method: "DELETE"
+  })
+
   carregar()
 }
+
+
+/* =========================
+   EDITAR
+========================= */
 
 async function editar(id, nomeAtual, statusAtual) {
   const nome = prompt("Novo nome:", nomeAtual)
+  if (!nome) return
+
   const status = prompt("Novo status:", statusAtual)
+  if (!status) return
 
   await fetch(API + "/" + id, {
     method: "PUT",
@@ -89,6 +159,11 @@ async function editar(id, nomeAtual, statusAtual) {
 
   carregar()
 }
+
+
+/* =========================
+   INIT
+========================= */
 
 carregar()
 </script>
