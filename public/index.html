@@ -5,33 +5,12 @@
   <title>Máquinas PlayFlippe</title>
 
   <style>
-    body {
-      font-family: Arial;
-      padding: 40px;
-      background: #f5f5f5;
-    }
-
-    input, button {
-      padding: 8px;
-      margin-right: 5px;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-top: 20px;
-      background: white;
-    }
-
-    th, td {
-      padding: 10px;
-      border: 1px solid #ddd;
-    }
-
-    th {
-      background: #222;
-      color: white;
-    }
+    body { font-family: Arial; padding: 40px; background: #f5f5f5; }
+    input, button { padding: 8px; margin-right: 5px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; background: white; }
+    th, td { padding: 10px; border: 1px solid #ddd; }
+    th { background: #222; color: white; }
+    .acoes button { margin-right: 6px; }
   </style>
 </head>
 
@@ -39,7 +18,7 @@
 
 <h2>Máquinas PlayFlippe</h2>
 
-<!-- FORMULÁRIO -->
+<!-- FORM -->
 <input id="nome" placeholder="Nome da máquina" />
 <input id="status" placeholder="Status (Ativa/Manutenção)" />
 <button onclick="adicionarMaquina()">Adicionar</button>
@@ -51,17 +30,16 @@
       <th>ID</th>
       <th>Nome</th>
       <th>Status</th>
+      <th>Ações</th>
     </tr>
   </thead>
   <tbody id="tabela-maquinas"></tbody>
 </table>
 
-
 <script>
 const API = "https://plushcontrol-playflippe-production.up.railway.app/maquinas";
 
-
-// CARREGAR LISTA
+// LISTAR
 async function carregarMaquinas() {
   const response = await fetch(API);
   const maquinas = await response.json();
@@ -75,23 +53,23 @@ async function carregarMaquinas() {
         <td>${m.id}</td>
         <td>${m.nome}</td>
         <td>${m.status}</td>
+        <td class="acoes">
+          <button onclick="editarStatus(${m.id})">Editar</button>
+          <button onclick="excluir(${m.id})">Excluir</button>
+        </td>
       </tr>
     `;
   });
 }
 
-
-// ADICIONAR (POST)
+// POST
 async function adicionarMaquina() {
-
   const nome = document.getElementById("nome").value;
   const status = document.getElementById("status").value;
 
   await fetch(API, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ nome, status })
   });
 
@@ -101,8 +79,32 @@ async function adicionarMaquina() {
   carregarMaquinas();
 }
 
+// PUT
+async function editarStatus(id) {
+  const novo = prompt("Novo status:");
 
-// iniciar
+  if (!novo) return;
+
+  await fetch(${API}/${id}, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: novo })
+  });
+
+  carregarMaquinas();
+}
+
+// DELETE
+async function excluir(id) {
+  if (!confirm("Excluir máquina?")) return;
+
+  await fetch(${API}/${id}, {
+    method: "DELETE"
+  });
+
+  carregarMaquinas();
+}
+
 carregarMaquinas();
 </script>
 
