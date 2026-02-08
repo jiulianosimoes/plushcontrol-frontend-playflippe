@@ -5,41 +5,28 @@
 <title>Máquinas PlayFlippe</title>
 
 <style>
-body {
-  font-family: Arial;
-  padding: 40px;
-  background: #f5f5f5;
-}
-
-.topo {
-  margin-bottom: 15px;
-}
-
-input, select, button {
-  padding: 8px;
-  margin-right: 5px;
-}
+body { font-family: Arial; padding: 40px; background: #f5f5f5 }
+input, select, button { padding: 8px; margin-right: 5px }
 
 table {
   border-collapse: collapse;
   width: 100%;
   margin-top: 20px;
-  background: white;
+  background: white
 }
 
 th, td {
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #ddd
 }
 
 th {
   background: #222;
-  color: white;
+  color: white
 }
 
-.acoes button {
-  margin-right: 5px;
-}
+.acoes button { margin-right: 5px }
+.filtros { margin-top: 15px }
 </style>
 </head>
 
@@ -47,20 +34,19 @@ th {
 
 <h2>Máquinas PlayFlippe</h2>
 
-<div class="topo">
-  <input id="nome" placeholder="Nome da máquina" />
-  <input id="status" placeholder="Status" />
-  <button onclick="adicionar()">Adicionar</button>
+<!-- ADICIONAR -->
+<input id="nome" placeholder="Nome da máquina" />
+<input id="status" placeholder="Status (Ativa/Manutenção)" />
+<button onclick="adicionar()">Adicionar</button>
 
-  <br><br>
+<!-- FILTROS -->
+<div class="filtros">
+  <input id="buscaNome" placeholder="Buscar por nome..." oninput="filtrar()" />
 
-  <!-- NOVOS FILTROS -->
-  <input id="busca" placeholder="🔎 Buscar por nome" oninput="aplicarFiltro()" />
-
-  <select id="filtroStatus" onchange="aplicarFiltro()">
+  <select id="filtroStatus" onchange="filtrar()">
     <option value="">Todos status</option>
-    <option value="Ativa">Ativa</option>
-    <option value="Manutenção">Manutenção</option>
+    <option>Ativa</option>
+    <option>Manutenção</option>
   </select>
 </div>
 
@@ -81,35 +67,13 @@ const API = "https://plushcontrol-playflippe-production.up.railway.app/maquinas"
 
 let maquinas = []
 
-// ============================
-// CARREGAR DADOS
-// ============================
 async function carregar() {
   const res = await fetch(API)
   maquinas = await res.json()
-  aplicarFiltro()
+  render(maquinas)
 }
 
-// ============================
-// FILTRO + BUSCA
-// ============================
-function aplicarFiltro() {
-  const texto = document.getElementById("busca").value.toLowerCase()
-  const statusFiltro = document.getElementById("filtroStatus").value
-
-  const filtrado = maquinas.filter(m => {
-    const nomeOk = m.nome.toLowerCase().includes(texto)
-    const statusOk = statusFiltro === "" || m.status === statusFiltro
-    return nomeOk && statusOk
-  })
-
-  renderizar(filtrado)
-}
-
-// ============================
-// RENDER TABELA
-// ============================
-function renderizar(lista) {
+function render(lista) {
   const tbody = document.getElementById("lista")
   tbody.innerHTML = ""
 
@@ -128,9 +92,18 @@ function renderizar(lista) {
   })
 }
 
-// ============================
-// CRUD
-// ============================
+function filtrar() {
+  const nome = document.getElementById("buscaNome").value.toLowerCase()
+  const status = document.getElementById("filtroStatus").value
+
+  const filtrado = maquinas.filter(m =>
+    m.nome.toLowerCase().includes(nome) &&
+    (status === "" || m.status === status)
+  )
+
+  render(filtrado)
+}
+
 async function adicionar() {
   const nome = document.getElementById("nome").value
   const status = document.getElementById("status").value
@@ -140,9 +113,6 @@ async function adicionar() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ nome, status })
   })
-
-  document.getElementById("nome").value = ""
-  document.getElementById("status").value = ""
 
   carregar()
 }
