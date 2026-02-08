@@ -3,6 +3,58 @@
 <script>
 const supabase = window.supabase.createClient(
   "https://invsdmxuxlcnxuqnyojl.supabase.co",
-  "COLE_AQUI_SUA_CHAVE_COMPLETA"
+  "SUA_CHAVE_AQUI"
 )
+
+async function carregar() {
+  const { data } = await supabase
+    .from("machines")
+    .select("*")
+    .order("id")
+
+  const tbody = document.querySelector("tbody")
+  tbody.innerHTML = ""
+
+  data.forEach(m => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${m.id}</td>
+        <td>${m.nome}</td>
+        <td>${m.status}</td>
+        <td>
+          <button onclick="editar(${m.id}, '${m.nome}', '${m.status}')">Editar</button>
+          <button onclick="excluir(${m.id})">Excluir</button>
+        </td>
+      </tr>
+    `
+  })
+}
+
+async function adicionar() {
+  const nome = document.getElementById("nome").value
+  const status = document.getElementById("status").value
+
+  await supabase.from("machines").insert([{ nome, status }])
+
+  carregar()
+}
+
+async function excluir(id) {
+  await supabase.from("machines").delete().eq("id", id)
+  carregar()
+}
+
+async function editar(id, nomeAtual, statusAtual) {
+  const nome = prompt("Novo nome:", nomeAtual)
+  const status = prompt("Novo status:", statusAtual)
+
+  await supabase
+    .from("machines")
+    .update({ nome, status })
+    .eq("id", id)
+
+  carregar()
+}
+
+carregar()
 </script>
