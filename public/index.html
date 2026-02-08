@@ -1,79 +1,112 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
 <meta charset="UTF-8" />
 <title>Máquinas PlayFlippe</title>
 
 <style>
-body { font-family: Arial; padding: 40px; background: #f5f5f5 }
-input, select, button { padding: 8px; margin-right: 5px }
+body {
+  font-family: Arial;
+  padding: 40px;
+  background: #f5f5f5;
+}
+
+input, select, button {
+  padding: 8px;
+  margin-right: 5px;
+}
 
 table {
   border-collapse: collapse;
   width: 100%;
   margin-top: 20px;
-  background: white
+  background: white;
 }
 
 th, td {
   padding: 10px;
-  border: 1px solid #ddd
+  border: 1px solid #ddd;
 }
 
 th {
   background: #222;
-  color: white
+  color: white;
 }
 
-.acoes button { margin-right: 5px }
-.filtros { margin-top: 15px }
+.acoes button {
+  margin-right: 5px;
+}
+
+.filtros {
+  margin-top: 15px;
+}
 </style>
 </head>
+
 
 <body>
 
 <h2>Máquinas PlayFlippe</h2>
 
-<!-- ADICIONAR -->
+<!-- CADASTRO -->
 <input id="nome" placeholder="Nome da máquina" />
 <input id="status" placeholder="Status (Ativa/Manutenção)" />
 <button onclick="adicionar()">Adicionar</button>
 
-<!-- FILTROS -->
+
+<!-- 🔥 FILTROS -->
 <div class="filtros">
-  <input id="buscaNome" placeholder="Buscar por nome..." oninput="filtrar()" />
+  <input
+    id="buscaNome"
+    placeholder="Buscar por nome..."
+    oninput="filtrar()"
+  />
 
   <select id="filtroStatus" onchange="filtrar()">
     <option value="">Todos status</option>
-    <option>Ativa</option>
-    <option>Manutenção</option>
+    <option value="Ativa">Ativa</option>
+    <option value="Manutenção">Manutenção</option>
   </select>
 </div>
 
+
+<!-- TABELA -->
 <table>
-<thead>
-<tr>
-<th>ID</th>
-<th>Nome</th>
-<th>Status</th>
-<th>Ações</th>
-</tr>
-</thead>
-<tbody id="lista"></tbody>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nome</th>
+      <th>Status</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+
+  <tbody id="lista"></tbody>
 </table>
+
+
 
 <script>
 const API = "https://plushcontrol-playflippe-production.up.railway.app/maquinas"
 
-let maquinas = []
+let dadosOriginais = []
 
+
+/* ===============================
+   CARREGAR DADOS
+================================*/
 async function carregar() {
   const res = await fetch(API)
-  maquinas = await res.json()
-  render(maquinas)
+  dadosOriginais = await res.json()
+  renderizar(dadosOriginais)
 }
 
-function render(lista) {
+
+/* ===============================
+   RENDERIZA TABELA
+================================*/
+function renderizar(lista) {
   const tbody = document.getElementById("lista")
   tbody.innerHTML = ""
 
@@ -92,18 +125,32 @@ function render(lista) {
   })
 }
 
-function filtrar() {
-  const nome = document.getElementById("buscaNome").value.toLowerCase()
-  const status = document.getElementById("filtroStatus").value
 
-  const filtrado = maquinas.filter(m =>
-    m.nome.toLowerCase().includes(nome) &&
-    (status === "" || m.status === status)
+/* ===============================
+   FILTRO POR NOME + STATUS
+================================*/
+function filtrar() {
+  const nomeBusca = document
+    .getElementById("buscaNome")
+    .value
+    .toLowerCase()
+
+  const statusFiltro = document
+    .getElementById("filtroStatus")
+    .value
+
+  const filtrado = dadosOriginais.filter(m =>
+    m.nome.toLowerCase().includes(nomeBusca) &&
+    (statusFiltro === "" || m.status === statusFiltro)
   )
 
-  render(filtrado)
+  renderizar(filtrado)
 }
 
+
+/* ===============================
+   ADICIONAR
+================================*/
 async function adicionar() {
   const nome = document.getElementById("nome").value
   const status = document.getElementById("status").value
@@ -117,14 +164,24 @@ async function adicionar() {
   carregar()
 }
 
+
+/* ===============================
+   EXCLUIR
+================================*/
 async function excluir(id) {
   await fetch(API + "/" + id, { method: "DELETE" })
   carregar()
 }
 
+
+/* ===============================
+   EDITAR
+================================*/
 async function editar(id, nomeAtual, statusAtual) {
   const nome = prompt("Novo nome:", nomeAtual)
   const status = prompt("Novo status:", statusAtual)
+
+  if (!nome || !status) return
 
   await fetch(API + "/" + id, {
     method: "PUT",
@@ -135,6 +192,8 @@ async function editar(id, nomeAtual, statusAtual) {
   carregar()
 }
 
+
+/* START */
 carregar()
 </script>
 
